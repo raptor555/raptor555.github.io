@@ -1,0 +1,182 @@
+<html>
+
+<head>
+    <title>Note</title>
+    <link rel="shortcut icon" href="note.ico" />
+    <style>
+        textarea {
+            resize: none;
+            font-family: 'Roboto', arial, sans-serif;
+            font-size: 16px;
+            line-height: 22px;
+            padding: 24px;
+            border-color: #ddd;
+            border-radius: 8px;
+        }
+
+        textarea:focus {
+            outline: none !important;
+            border-color: #bbb;
+            box-shadow: 0 0 5px #bbb;
+        }
+
+        #mytextarea {
+            width: 100%;
+            height: 100%;
+        }
+
+        #myoutput {
+            width: 100%;
+            height: 85%;
+        }
+
+        #left {
+            float: left;
+            width: 55%;
+            height: 99%;
+        }
+
+        #right {
+            float: left;
+            width: 42%;
+            margin-left: 10px;
+            height: 99%;
+        }
+
+        #menu {
+            margin: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div id="left">
+        <textarea id="mytextarea" spellcheck="false" autofocus></textarea>
+    </div>
+    <div id="right">
+        <div id="menu">
+            <span id="mycount">length</span>&nbsp;&nbsp;
+            <input type="button" value="Screen" onclick="new_screen()">&nbsp;&nbsp;
+            <a href="https://www.timeanddate.com/timer" target="_blank">Timer</a>&nbsp;&nbsp;
+            <div>
+                <input type="button" value="Short" onclick="getShortUrl()">&nbsp;&nbsp;
+                <input type="text" id="showShort" style="width: 50%;">&nbsp;&nbsp;
+                <input type="button" value="Copy" onclick="copyShortUrl()">&nbsp;&nbsp;
+            </div>
+        </div>
+        <textarea id="myoutput" spellcheck="false" disabled>Ctrl+Enter or Ctrl+r = compute line
+</textarea>
+    </div>
+    <script>
+        //ERR! max 16384 char
+        var text = document.getElementById('mytextarea');
+        var textout = document.getElementById('myoutput');
+        var count = document.getElementById('mycount');
+        var showShort = document.getElementById('showShort');
+        var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length;n++)t[o][o.charAt(n)]=n}return t[o][r]}var r=String.fromCharCode,n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",e="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",t={},i={compressToBase64:function(o){if(null==o)return"";var r=i._compress(o,6,function(o){return n.charAt(o)});switch(r.length%4){default:case 0:return r;case 1:return r+"===";case 2:return r+"==";case 3:return r+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(e){return o(n,r.charAt(e))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(o){return null==o?"":""==o?null:i._decompress(o.length,16384,function(r){return o.charCodeAt(r)-32})},compressToUint8Array:function(o){for(var r=i.compress(o),n=new Uint8Array(2*r.length),e=0,t=r.length;t>e;e++){var s=r.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null===o||void 0===o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;t>e;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(o){return null==o?"":i._compress(o,6,function(o){return e.charAt(o)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(n){return o(e,r.charAt(n))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(o,r,n){if(null==o)return"";var e,t,i,s={},p={},u="",c="",a="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<o.length;i+=1)if(u=o.charAt(i),Object.prototype.hasOwnProperty.call(s,u)||(s[u]=f++,p[u]=!0),c=a+u,Object.prototype.hasOwnProperty.call(s,c))a=c;else{if(Object.prototype.hasOwnProperty.call(p,a)){if(a.charCodeAt(0)<256){for(e=0;h>e;e++)m<<=1,v==r-1?(v=0,d.push(n(m)),m=0):v++;for(t=a.charCodeAt(0),e=0;8>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;h>e;e++)m=m<<1|t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=a.charCodeAt(0),e=0;16>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}l--,0==l&&(l=Math.pow(2,h),h++),delete p[a]}else for(t=s[a],e=0;h>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;l--,0==l&&(l=Math.pow(2,h),h++),s[c]=f++,a=String(u)}if(""!==a){if(Object.prototype.hasOwnProperty.call(p,a)){if(a.charCodeAt(0)<256){for(e=0;h>e;e++)m<<=1,v==r-1?(v=0,d.push(n(m)),m=0):v++;for(t=a.charCodeAt(0),e=0;8>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;h>e;e++)m=m<<1|t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=a.charCodeAt(0),e=0;16>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}l--,0==l&&(l=Math.pow(2,h),h++),delete p[a]}else for(t=s[a],e=0;h>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;l--,0==l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;h>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==r-1){d.push(n(m));break}v++}return d.join("")},decompress:function(o){return null==o?"":""==o?null:i._decompress(o.length,32768,function(r){return o.charCodeAt(r)})},_decompress:function(o,n,e){var t,i,s,p,u,c,a,l,f=[],h=4,d=4,m=3,v="",w=[],A={val:e(0),position:n,index:1};for(i=0;3>i;i+=1)f[i]=i;for(p=0,c=Math.pow(2,2),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;switch(t=p){case 0:for(p=0,c=Math.pow(2,8),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;l=r(p);break;case 1:for(p=0,c=Math.pow(2,16),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;l=r(p);break;case 2:return""}for(f[3]=l,s=l,w.push(l);;){if(A.index>o)return"";for(p=0,c=Math.pow(2,m),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;switch(l=p){case 0:for(p=0,c=Math.pow(2,8),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;f[d++]=r(p),l=d-1,h--;break;case 1:for(p=0,c=Math.pow(2,16),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;f[d++]=r(p),l=d-1,h--;break;case 2:return w.join("")}if(0==h&&(h=Math.pow(2,m),m++),f[l])v=f[l];else{if(l!==d)return null;v=s+s.charAt(0)}w.push(v),f[d++]=s+v.charAt(0),h--,s=v,0==h&&(h=Math.pow(2,m),m++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module&&(module.exports=LZString);
+
+
+        text.value = get_text_url();
+        update_count();
+
+        document.onkeydown = function (e) {
+            if ((e.ctrlKey && e.keyCode === 83) || (e.ctrlKey && e.keyCode === 82)) {
+                e.preventDefault();
+                return false;
+            }
+        }
+        text.onkeyup = function (e) {
+            set_text_url(text.value);
+            update_count();
+            var value = text.value;
+            if ((e.ctrlKey && e.keyCode === 13) || (e.ctrlKey && e.keyCode === 82)) {
+                focusline = text.value.substr(0, text.selectionStart).split("\n").length;
+                arr = text.value.split("\n");
+                value = arr[focusline-1]
+                var com = compute_text(value);
+                if (com) {
+                    textout.value += com + "\n"
+                    textout.scrollTop = textout.scrollHeight;
+                }
+                e.preventDefault();
+                return false;
+            }
+            if (text.selectionStart >= value.length) {
+                text.scrollTop = text.scrollHeight;
+            }
+            if (text.selectionStart <= 0) {
+                text.scrollTop = 0;
+            }
+        };
+        function compute_text(str) {
+            var ret = '';
+            str = str.trim() || '';
+            if (str.length <= 1) return ret;
+            try {
+                ret = str + ' = ' + eval(str);
+            }
+            catch (err) {
+                ret = str + ' = ERR!';
+            }
+            return ret;
+        }
+        function set_text_url(str) {
+            // var text = encodeURIComponent(str);
+            // window.history.pushState('aaa', 'bbb', get_base_url() + '?text=' + text);
+            var text = str;
+            text = LZString.compressToBase64(text);
+            text = encodeURIComponent(text);
+            window.history.pushState('aaa', 'bbb', get_base_url() + '?text=' + text);
+        }
+        function get_text_url() {
+            var text = window.location.search.split('text=')[1] || ''
+            text = decodeURIComponent(text);
+            text = LZString.decompressFromBase64(text);
+            return text;
+            // return decodeURIComponent(window.location.search.split('text=')[1] || '');
+        }
+        function get_base_url(str) {
+            var url = window.location;
+            return url.origin + url.pathname;
+        }
+        function new_screen() {
+            var newWindow = window.open();
+            newWindow.document.body.style.background = '#000';
+        }
+        function update_count(){
+            var max_count = 16384;   // ERR!
+            // var max_count = 6000;
+            var this_count = window.location.search.length;
+            if (this_count > max_count) {
+                // window.location = window.location.search.substring(0, max_count);
+                // text.value = text.value.substring(0, max_count);
+            }
+            count.innerHTML = this_count + ' / ' + max_count;
+        }
+        function show_full_url() {
+            var url = window.location;
+            console.log('host:', url.host);
+            console.log('origin:', url.origin);
+            console.log('path', url.pathname);
+            console.log('search', url.search);
+            const urlParams = new URLSearchParams(url.search);
+            console.log('text', urlParams.get('text'));
+        }
+        function getShortUrl() {
+            var text = window.location.search.split('text=')[1] || ''
+            axios.get('http://159.65.131.190:5007/short/?text=' + text).then(function (response) {
+                showShort.value = response.data;
+                showShort.select();
+                showShort.setSelectionRange(0, 99999);
+            })
+        }
+        function copyShortUrl() {
+            showShort.select();
+            showShort.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+        }
+    </script>
+</body>
+
+</html>
